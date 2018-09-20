@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 """
-This script takes an APK file or a DEX file and extracts all the API 
+This script takes an APK file or a DEX file and extracts all the API
 calls made by methods that do not belong to classes in the android package.
 
 By default it removes the calls made to methods that do not belong to the android.jar.
@@ -16,36 +16,37 @@ from __future__ import print_function
 
 import re
 import sys
-import r2pipe
 from itertools import chain
+from tempfile import NamedTemporaryFile
+
+import r2pipe
 import click
 from androguard.core.bytecodes.apk import APK
-from tempfile import NamedTemporaryFile
 
 @click.command()
 @click.option('-f', default='classes.dex', help="The file that is going to be parsed")
 @click.option('-o', default='-', help="Location where to dump the results. Default stdout (-)")
 @click.option('--android-only/--all-methods', default=True,
-              help="Set to true to remove any method call that doesn't point to a method in android.jar")
-class Dex2Call():
+              help="Set to true to remove any method call that doesn't point to an android method")
+class Dex2Call(object):
     """
     Entry point of the script
     """
-    
+
     def __init__(self, f, o, android_only):
         """
         Inits all the attributes and starts the main routines.
         """
         if o == '-':
             self.out = sys.stdout
-        elif type(o) == str:
+        elif isinstance(o) == str:
             self.out = open(o, 'w')
         else:
             self.out = o
 
-        self.is_android_method = re.compile('^.android\/')
-        self.is_invocation_opcode = re.compile('^invoke-')
-        self.invoke_disasm = re.compile('^invoke-.* \{.*\}, ([^ ]*)( ;.*)?$')
+        self.is_android_method = re.compile(r'^.android\/')
+        self.is_invocation_opcode = re.compile(r'^invoke-')
+        self.invoke_disasm = re.compile(r'^invoke-.* \{.*\}, ([^ ]*)( ;.*)?$')
 
         self.android_only = android_only
         if f.endswith('.dex'):
@@ -67,47 +68,50 @@ class Dex2Call():
         """
         Using radare2 as backend extracts the method calls from the Dalvik Bytecode.
         """
-        self.r2 = r2pipe.open(dexfile)
+        self.r2 = r2pipe.open(dexfile) # pylint: disable=invalid-name
         self.r2.cmd('aa')
 
-        # Take the classes that are not from andriod.jar. The command 'icj' returns each class with their methods
-        interesting_classes = (c for c in self.r2.cmdj('icj') if not self.is_android_method.match(c['classname']))
-        # Extract the code of each method 
+        # Take the classes that are not from andriod.jar.
+        # The command 'icj' returns each class with their methods
+        interesting_classes = (c for c in self.r2.cmdj('icj')
+                               if not self.is_android_method.match(c['classname']))
+        # Extract the code of each method
         methods = chain(*map(self.extract_methods, interesting_classes))
         # From the code of each method, extract the ones that invoke other methods
-        opcodes = filter(self.is_invocation, chain(*methods)) 
+        opcodes = filter(self.is_invocation, chain(*methods))
         # From the disasm of each opcode, extract the called method
         called_methods = set(map(self.extract_called, opcodes))
         # Filter the methods that are not from android.jar
         if self.android_only:
             called_methods = filter(self.is_android_method.match, called_methods)
 
-        for mthd in called_methods: self.out.write("%s\n" % mthd)
+        for mthd in called_methods:
+            self.out.write("%s\n" % mthd)
         self.r2.quit()
 
-    def extract_methods(self, c):
+    def extract_methods(self, klass):
         """
         Takes the JSON of a class and extracts the code of each method.
         """
-        return (self.parse_method(m) for m in c['methods'])
-        
-    def parse_method(self, m):
+        return (self.parse_method(m) for m in klass['methods'])
+
+    def parse_method(self, method):
         """
         From a method JSON takes the address and returns the disasembly of the method.
         """
-        return self.r2.cmdj('pdfj @ 0x%08x' % m['addr'])['ops']
+        return self.r2.cmdj('pdfj @ 0x%08x' % method['addr'])['ops']
 
-    def is_invocation(self, op):
+    def is_invocation(self, opcode):
         """
         Check if it's an invocation opcode.
         """
-        return self.is_invocation_opcode.match(op['disasm'])
+        return self.is_invocation_opcode.match(opcode['disasm'])
 
-    def extract_called(self, op):
+    def extract_called(self, opcode):
         """
         Takes the called method from the disassembly and returns it.
         """
-        return re.search(self.invoke_disasm, op['disasm']).group(1)
+        return re.search(self.invoke_disasm, opcode['disasm']).group(1)
 
 if __name__ == "__main__":
-    Dex2Call()
+    Dex2Call() # pylint: disable=no-value-for-parameter
