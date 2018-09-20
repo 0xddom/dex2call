@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 
 """
 This script takes an APK file or a DEX file and extracts all the API 
