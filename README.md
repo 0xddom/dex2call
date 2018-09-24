@@ -6,17 +6,13 @@ Tested on Python 2.7 but should be a polyglot script.
 
 ## Installation
 
-Install [radare2](https://github.com/radare/radare2) and the following python packages:
+Install [radare2](https://github.com/radare/radare2) and run:
 
-- `r2pipe`
-- `click`
-- `androguard`
-
-The `click` package should only be installed if you are going to use this as a script.
+    pip install dex2call
 
 ## Usage
 
-    ./dex2call.py --help
+    $ dex2call.py --help
     Usage: dex2call.py [OPTIONS] <dex or apk>
     
       This script reads the bytecode of a dex file or an apk file and yields the
@@ -36,7 +32,7 @@ The `click` package should only be installed if you are going to use this as a s
 
 As command line tool:
 
-    $ ./dex2call.py classes.dex
+    $ dex2call.py classes.dex
 	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
     Landroid/location/Location.getLongitude()D
     Landroid/app/Activity.onResume()V

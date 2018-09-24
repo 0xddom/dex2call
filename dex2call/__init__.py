@@ -34,7 +34,7 @@ class Dex2Call(object):
         """
         if out == '-':
             self.out = sys.stdout
-        elif isinstance(out,str):
+        elif isinstance(out, str):
             self.out = open(out, 'w')
         else:
             self.out = out
@@ -115,27 +115,3 @@ class Dex2Call(object):
         """
         return re.search(self.invoke_disasm, opcode['disasm']).group(1)
 
-if __name__ == "__main__":
-    import click
-
-    @click.command()
-    @click.argument('dexfile', default='classes.dex',
-                    type=click.Path(exists=True),
-                    metavar="<dex or apk>")
-    @click.option('-o', '--output', default='-',
-                  help="Location where to dump the results. Default stdout (-)",
-                  metavar="<file>")
-    @click.option('--android-only/--all-methods', default=True,
-                  help="Set to true to remove any method call " +
-                  "that doesn't point to an android method")
-    def launcher(dexfile, output, android_only):
-        """
-        This script reads the bytecode of a dex file or an apk file and yields
-        the API calls made by the developer code. By default only shows the API
-        calls made to android.jar.
-
-        The script by default looks for ./classes.dex.
-        """
-        Dex2Call(dexfile, output, android_only).extract()
-
-    launcher() # pylint: disable=no-value-for-parameter
