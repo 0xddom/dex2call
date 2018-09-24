@@ -9,7 +9,7 @@ By default it removes the calls made to methods that do not belong to the androi
 This means that the default behaviour is to get the calls made to android.jar made by
 the developer's code.
 
-(c) 2018 Daniel Domínguez <daniel.dominguez@idmea.org>
+(c) 2018 Daniel Domínguez <daniel.dominguez@imdea.org>
 """
 
 from __future__ import print_function
