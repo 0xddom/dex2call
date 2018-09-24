@@ -43,20 +43,5 @@ As command line tool:
     Landroid/app/Activity.<init>()V
     Landroid/widget/Toast.show()V
 
-As library:
 
-	>>> from dex2call import Dex2Call
-	>>> d = Dex2Call("./classes.dex", "-")
-	>>> d.extract()
-	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
-	Landroid/location/Location.getLongitude()D
-	Landroid/app/Activity.onResume()V
-	Landroid/location/Location.getLatitude()D
-	Landroid/widget/Toast.makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
-	Landroid/location/LocationManager.requestLocationUpdates(Ljava/lang/String;JFLandroid/location/LocationListener;)V
-	Landroid/app/Activity.onCreate(Landroid/os/Bundle;)V
-	Landroid/app/Activity.<init>()V
-	Landroid/widget/Toast.show()V
-	>>>
-
-A more elaborated example can be found in `example.py`.
+An example can be found in `example.py` of how to use dex2call as a python module.
