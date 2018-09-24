@@ -34,7 +34,7 @@ class Dex2Call(object):
         """
         if out == '-':
             self.out = sys.stdout
-        elif isinstance(out) == str:
+        elif isinstance(out,str):
             self.out = open(out, 'w')
         else:
             self.out = out
