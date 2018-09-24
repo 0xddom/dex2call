@@ -50,7 +50,7 @@ As command line tool:
 As library:
 
 	>>> from dex2call import Dex2Call
-	>>> d = Dex2Call("../dexparse/classes.dex", "-")
+	>>> d = Dex2Call("./classes.dex", "-")
 	>>> d.extract()
 	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
 	Landroid/location/Location.getLongitude()D
