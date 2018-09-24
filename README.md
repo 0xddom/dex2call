@@ -8,26 +8,33 @@ Tested on Python 2.7 but should be a polyglot script.
 
 Install [radare2](https://github.com/radare/radare2) and the following python packages:
 
-- r2pipe
-- click
-- androguard
+- `r2pipe`
+- `click`
+- `androguard`
+
+The `click` package should only be installed if you are going to use this as an script.
 
 ## Usage
 
     ./dex2call.py --help
-    Usage: dex2call.py [OPTIONS]
-
-    Entry point of the script
-
+    Usage: dex2call.py [OPTIONS] <dex or apk>
+    
+      This script reads the bytecode of a dex file or an apk file and yields the
+      API calls made by the developer code. By default only shows the API calls
+      made to android.jar.
+    
+      The script by default looks for ./classes.dex.
+    
     Options:
-      -f TEXT                         The file that is going to be parsed
-      -o TEXT                         Location where dump the results. Default stdout (-)
-      --android-only / --all-methods  Set to true to remove any method call that doesn't point to a method in android.jar
+      -o, --output <file>             Location where to dump the results. Default
+                                      stdout (-)
+      --android-only / --all-methods  Set to true to remove any method call that
+                                      doesn't point to an android method
       --help                          Show this message and exit.
 
 ## Example:
 
-    ./dex2call.py -f classes.dex
+    ./dex2call.py classes.dex
 	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
     Landroid/location/Location.getLongitude()D
     Landroid/app/Activity.onResume()V
