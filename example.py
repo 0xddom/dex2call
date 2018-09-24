@@ -1,8 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- encoding: utf-8 -*-
 
 """
-Small example of how to use the Dex2Call class in python code.
+Small example of how to use the Dex2Call class in python2 code.
+
+For a python 3 version, change the import of StringIO to the correct one.
 """
 
 from StringIO import StringIO
