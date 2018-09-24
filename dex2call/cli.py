@@ -1,5 +1,30 @@
+"""
+Cli entrypoint for dex2call
+"""
+
+import sys
 import click
 from dex2call import Dex2Call
+
+
+class CliOutput(object):
+    """
+    Class that implements the listener interface that Dex2Call requires.
+    """
+
+    def __init__(self, output):
+         if output == '-':
+             self.output = sys.stdout
+         else:
+             self.output = open(output, 'w')
+
+    def on_method(self, mthd):
+        """
+        Called by Dex2Call each time it finds a method that 
+        needs to be logged in.
+        """
+        self.output.write("%s\n" % mthd)
+             
 
 @click.command()
 @click.argument('dexfile', default='classes.dex',
@@ -19,5 +44,6 @@ def cli(dexfile, output, android_only):
 
     The script by default looks for ./classes.dex.
     """
-    Dex2Call(dexfile, output, android_only).extract()
+   
+    Dex2Call(dexfile, CliOutput(output), android_only).extract()
         

@@ -32,12 +32,8 @@ class Dex2Call(object):
         """
         Inits all the attributes.
         """
-        if out == '-':
-            self.out = sys.stdout
-        elif isinstance(out, str):
-            self.out = open(out, 'w')
-        else:
-            self.out = out
+        
+        self.out = out
 
         self.is_android_method = re.compile(r'^.android\/')
         self.is_invocation_opcode = re.compile(r'^invoke-')
@@ -88,7 +84,7 @@ class Dex2Call(object):
             called_methods = filter(self.is_android_method.match, called_methods)
 
         for mthd in called_methods:
-            self.out.write("%s\n" % mthd)
+            self.out.on_method(mthd)
         self.r2.quit()
 
     def extract_methods(self, klass):
