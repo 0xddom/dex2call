@@ -36,7 +36,7 @@ The `click` package should only be installed if you are going to use this as a s
 
 As command line tool:
 
-    ./dex2call.py classes.dex
+    $ ./dex2call.py classes.dex
 	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
     Landroid/location/Location.getLongitude()D
     Landroid/app/Activity.onResume()V
