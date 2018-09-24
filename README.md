@@ -12,7 +12,7 @@ Install [radare2](https://github.com/radare/radare2) and the following python pa
 - `click`
 - `androguard`
 
-The `click` package should only be installed if you are going to use this as an script.
+The `click` package should only be installed if you are going to use this as a script.
 
 ## Usage
 
