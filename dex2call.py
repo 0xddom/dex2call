@@ -20,39 +20,41 @@ from itertools import chain
 from tempfile import NamedTemporaryFile
 
 import r2pipe
-import click
 from androguard.core.bytecodes.apk import APK
 
-@click.command()
-@click.option('-f', default='classes.dex', help="The file that is going to be parsed")
-@click.option('-o', default='-', help="Location where to dump the results. Default stdout (-)")
-@click.option('--android-only/--all-methods', default=True,
-              help="Set to true to remove any method call that doesn't point to an android method")
+
 class Dex2Call(object):
     """
-    Entry point of the script
+    This class implements the logic for extracting the API calls to android.jar from the bytecode.
     """
 
-    def __init__(self, f, o, android_only):
+    def __init__(self, dexpath, out, android_only=True):
         """
-        Inits all the attributes and starts the main routines.
+        Inits all the attributes.
         """
-        if o == '-':
+        if out == '-':
             self.out = sys.stdout
-        elif isinstance(o) == str:
-            self.out = open(o, 'w')
+        elif isinstance(out) == str:
+            self.out = open(out, 'w')
         else:
-            self.out = o
+            self.out = out
 
         self.is_android_method = re.compile(r'^.android\/')
         self.is_invocation_opcode = re.compile(r'^invoke-')
         self.invoke_disasm = re.compile(r'^invoke-.* \{.*\}, ([^ ]*)( ;.*)?$')
 
         self.android_only = android_only
-        if f.endswith('.dex'):
-            self.extract_calls_from_dex(f)
+        self.dexpath = dexpath
+
+    def extract(self):
+        """
+        Launches the extraction logic.
+        """
+
+        if self.dexpath.endswith('.dex'):
+            self.extract_calls_from_dex(self.dexpath)
         else:
-            self.extract_calls_from_apk(f)
+            self.extract_calls_from_apk(self.dexpath)
 
     def extract_calls_from_apk(self, apkfile):
         """
@@ -68,7 +70,7 @@ class Dex2Call(object):
         """
         Using radare2 as backend extracts the method calls from the Dalvik Bytecode.
         """
-        self.r2 = r2pipe.open(dexfile) # pylint: disable=invalid-name
+        self.r2 = r2pipe.open(dexfile) # pylint: disable=invalid-name,attribute-defined-outside-init
         self.r2.cmd('aa')
 
         # Take the classes that are not from andriod.jar.
@@ -114,4 +116,26 @@ class Dex2Call(object):
         return re.search(self.invoke_disasm, opcode['disasm']).group(1)
 
 if __name__ == "__main__":
-    Dex2Call() # pylint: disable=no-value-for-parameter
+    import click
+
+    @click.command()
+    @click.argument('dexfile', default='classes.dex',
+                    type=click.Path(exists=True),
+                    metavar="<dex or apk>")
+    @click.option('-o', '--output', default='-',
+                  help="Location where to dump the results. Default stdout (-)",
+                  metavar="<file>")
+    @click.option('--android-only/--all-methods', default=True,
+                  help="Set to true to remove any method call " +
+                  "that doesn't point to an android method")
+    def launcher(dexfile, output, android_only):
+        """
+        This script reads the bytecode of a dex file or an apk file and yields
+        the API calls made by the developer code. By default only shows the API
+        calls made to android.jar.
+
+        The script by default looks for ./classes.dex.
+        """
+        Dex2Call(dexfile, output, android_only).extract()
+
+    launcher() # pylint: disable=no-value-for-parameter
