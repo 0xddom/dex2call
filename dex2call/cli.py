@@ -4,27 +4,8 @@ Cli entrypoint for dex2call
 
 import sys
 import click
-from dex2call import Dex2Call
+from dex2call import Extractor
 
-
-class CliOutput(object):
-    """
-    Class that implements the listener interface that Dex2Call requires.
-    """
-
-    def __init__(self, output):
-         if output == '-':
-             self.output = sys.stdout
-         else:
-             self.output = open(output, 'w')
-
-    def on_method(self, mthd):
-        """
-        Called by Dex2Call each time it finds a method that 
-        needs to be logged in.
-        """
-        self.output.write("%s\n" % mthd)
-             
 
 @click.command()
 @click.argument('dexfile', default='classes.dex',
@@ -36,7 +17,9 @@ class CliOutput(object):
 @click.option('--android-only/--all-methods', default=True,
               help="Set to true to remove any method call " +
               "that doesn't point to an android method")
-def cli(dexfile, output, android_only):
+@click.option('--pkg-name', help="The name of the package", default=None,
+              metavar="<package name>")
+def cli(dexfile, output, android_only, pkg_name):
     """
     This script reads the bytecode of a dex file or an apk file and yields
     the API calls made by the developer code. By default only shows the API
@@ -44,6 +27,12 @@ def cli(dexfile, output, android_only):
 
     The script by default looks for ./classes.dex.
     """
-   
-    Dex2Call(dexfile, CliOutput(output), android_only).extract()
-        
+
+    methods = Extractor(dexfile, pkg_name=pkg_name, android_only=android_only).extract()
+    if output == '-':
+        output = sys.stdout
+    else:
+        output = open(output, 'w')
+
+    for mthd in methods:
+        output.write("%s\n" % mthd)

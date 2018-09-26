@@ -7,7 +7,7 @@ setup(
     author="Daniel Domínguez",
     author_email="daniel.dominguez@imdea.org",
     url="https://github.com/KuroAku/dex2call",
-    version="0.2.1",
+    version="0.3.0",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -25,4 +25,3 @@ setup(
     long_description_content_type="text/markdown",
     description="A simple module to get calls to android.jar from the bytecode"
 )
-    

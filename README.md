@@ -12,8 +12,8 @@ Install [radare2](https://github.com/radare/radare2) and run:
 
 ## Usage
 
-    $ dex2call.py --help
-    Usage: dex2call.py [OPTIONS] <dex or apk>
+    $ dex2call --help
+    Usage: dex2call [OPTIONS] <dex or apk>
     
       This script reads the bytecode of a dex file or an apk file and yields the
       API calls made by the developer code. By default only shows the API calls
@@ -26,13 +26,14 @@ Install [radare2](https://github.com/radare/radare2) and run:
                                       stdout (-)
       --android-only / --all-methods  Set to true to remove any method call that
                                       doesn't point to an android method
+      --pkg-name <package name>       The name of the package
       --help                          Show this message and exit.
 
 ## Example:
 
 As command line tool:
 
-    $ dex2call.py classes.dex
+    $ dex2call --pkg-name app.pkg.name classes.dex
 	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
     Landroid/location/Location.getLongitude()D
     Landroid/app/Activity.onResume()V
@@ -43,5 +44,6 @@ As command line tool:
     Landroid/app/Activity.<init>()V
     Landroid/widget/Toast.show()V
 
+If an APK is passed to the tool, it will extract each dex file and also will infer the package name.
 
 An example can be found in `example.py` of how to use dex2call as a python module.
