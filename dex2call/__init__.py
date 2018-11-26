@@ -119,4 +119,8 @@ class Extractor(object):
         """
         From a method JSON takes the address and returns the disasembly of the method.
         """
-        return self.r2.cmdj('pdfj @ 0x%08x' % method['addr'])['ops']
+        mthd_result = self.r2.cmdj('pdfj @ 0x%08x' % method['addr'])
+        if mthd_result:
+            return mthd_result['ops']
+        else:
+            return []
