@@ -7,7 +7,7 @@ setup(
     author="Daniel Domínguez",
     author_email="daniel.dominguez@imdea.org",
     url="https://github.com/KuroAku/dex2call",
-    version="0.3.1",
+    version="0.4.0",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

@@ -34,18 +34,23 @@ def extract_called(opcodes):
     return re.search(INVOKE_DISASM, opcodes).group(1)
 
 
+def nop(_):
+    pass
+
+
 class Extractor(object):
     """
     This class implements the logic for extracting the API calls to android.jar from the bytecode.
     """
 
-    def __init__(self, dexpath, pkg_name=None, android_only=True):
+    def __init__(self, dexpath, pkg_name=None, android_only=True, r2_prelude=nop):
         """
         Inits all the attributes.
         """
         self.android_only = android_only
         self.dexpath = dexpath
         self.pkg_name = pkg_name
+        self.r2_prelude = r2_prelude
 
     def extract(self):
         """
@@ -78,6 +83,7 @@ class Extractor(object):
         commands until the generator starts to yield values.
         """
         self.r2 = r2pipe.open(dexfile) # pylint: disable=invalid-name,attribute-defined-outside-init
+        self.r2_prelude(self.r2)
         self.r2.cmd('aa')
 
         # Take the classes that are from the package of the developer's code.
@@ -86,9 +92,9 @@ class Extractor(object):
         # Extract the code of each method
         methods = chain(*map(self.extract_methods, interesting_classes))
         # Take the disassembly from the methods
-        disassemblies = (mthd['disasm'] for mthd in chain(*methods))
+        opcodes = (mthd['disasm'] for mthd in chain(*methods) if IS_INVOCATION_OPCODE.match(mthd['disasm']))
         # From the code of each method, extract the ones that invoke other methods
-        opcodes = filter(IS_INVOCATION_OPCODE.match, disassemblies)
+        #opcodes = filter(IS_INVOCATION_OPCODE.match, disassemblies)
         # From the disasm of each opcode, extract the called method
         called_methods = set(map(extract_called, opcodes))
         # Filter the methods that are not from android.jar
@@ -105,9 +111,9 @@ class Extractor(object):
 
     def class_is_from_the_pkg(self, klass):
         """
-        Returns whenever the class is from the package.
+        Returns whenever the class is from the package, this means, it's not from android.
         """
-        return klass['classname'][1:].startswith(self.pkg_name.replace('.', '/'))
+        return not IS_ANDROID_METHOD.match(klass['classname'])
 
     def extract_methods(self, klass):
         """
