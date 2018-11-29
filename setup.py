@@ -7,7 +7,7 @@ setup(
     author="Daniel Domínguez",
     author_email="daniel.dominguez@imdea.org",
     url="https://github.com/0xddom/dex2call",
-    version="0.6.0",
+    version="0.6.1",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
