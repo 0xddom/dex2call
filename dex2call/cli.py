@@ -17,9 +17,7 @@ from dex2call import Extractor
 @click.option('--android-only/--all-methods', default=True,
               help="Set to true to remove any method call " +
               "that doesn't point to an android method")
-@click.option('--pkg-name', help="The name of the package", default=None,
-              metavar="<package name>")
-def cli(dexfile, output, android_only, pkg_name):
+def cli(dexfile, output, android_only):
     """
     This script reads the bytecode of a dex file or an apk file and yields
     the API calls made by the developer code. By default only shows the API
@@ -28,7 +26,7 @@ def cli(dexfile, output, android_only, pkg_name):
     The script by default looks for ./classes.dex.
     """
 
-    methods = Extractor(dexfile, pkg_name=pkg_name, android_only=android_only).extract()
+    methods = Extractor(dexfile, android_only=android_only).extract()
     if output == '-':
         output = sys.stdout
     else:

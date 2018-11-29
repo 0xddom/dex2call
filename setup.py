@@ -7,12 +7,11 @@ setup(
     author="Daniel Domínguez",
     author_email="daniel.dominguez@imdea.org",
     url="https://github.com/0xddom/dex2call",
-    version="0.4.0",
+    version="0.5.0",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
         'Click',
-        'r2pipe',
         'androguard'
     ],
     license="LICENSE",

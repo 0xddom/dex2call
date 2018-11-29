@@ -2,11 +2,9 @@
 
 A simple script that takes an APK or a DEX files and returns the method calls made by the developer's code to the android.jar classes.
 
-Tested on Python 2.7 but should be a polyglot script.
+Tested on Python 2.7 and 3.7 but should be a polyglot script.
 
 ## Installation
-
-Install [radare2](https://github.com/radare/radare2) and run:
 
     pip install dex2call
 
@@ -26,14 +24,13 @@ Install [radare2](https://github.com/radare/radare2) and run:
                                       stdout (-)
       --android-only / --all-methods  Set to true to remove any method call that
                                       doesn't point to an android method
-      --pkg-name <package name>       The name of the package
       --help                          Show this message and exit.
 
 ## Example:
 
 As command line tool:
 
-    $ dex2call --pkg-name app.pkg.name classes.dex
+    $ dex2call classes.dex
 	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
     Landroid/location/Location.getLongitude()D
     Landroid/app/Activity.onResume()V
