@@ -1,5 +1,7 @@
 # Dex2Call
 
+[![PyPI version](https://badge.fury.io/py/dex2call.svg)](https://badge.fury.io/py/dex2call)
+
 A simple script that takes an APK or a DEX files and returns the method calls made by the developer's code to the android.jar classes.
 
 Tested on Python 2.7 and 3.7 but should be a polyglot script.
@@ -31,15 +33,18 @@ Tested on Python 2.7 and 3.7 but should be a polyglot script.
 As command line tool:
 
     $ dex2call classes.dex
-	Landroid/util/Log.d(Ljava/lang/String;Ljava/lang/String;)I
-    Landroid/location/Location.getLongitude()D
-    Landroid/app/Activity.onResume()V
-    Landroid/location/Location.getLatitude()D
-    Landroid/widget/Toast.makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
-    Landroid/location/LocationManager.requestLocationUpdates(Ljava/lang/String;JFLandroid/location/LocationListener;)V
-    Landroid/app/Activity.onCreate(Landroid/os/Bundle;)V
-    Landroid/app/Activity.<init>()V
-    Landroid/widget/Toast.show()V
+    (android.location.Location getLatitude () None)
+    (android.location.Location getLongitude () None)
+    (android.app.Activity <init> () None)
+    (android.app.Activity onCreate (android.os.Bundle) None)
+    (android.location.LocationManager requestLocationUpdates (java.lang.String android.location.LocationListener) None)
+    (android.app.Activity onResume () None)
+    (android.util.Log d (java.lang.String java.lang.String) None)
+    (android.util.Log d (java.lang.String java.lang.String) None)
+    (android.widget.Toast makeText (android.content.Context java.lang.CharSequence) android.widget.Toast)
+    (android.widget.Toast show () None)
+    (android.widget.Toast makeText (android.content.Context java.lang.CharSequence) android.widget.Toast)
+    (android.widget.Toast show () None)
 
 If an APK is passed to the tool, it will extract each dex file and also will infer the package name.
 
