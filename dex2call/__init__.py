@@ -71,8 +71,8 @@ class Extractor(object):
     def is_interesting_instruction(self, i):
         is_android = str(i.get_translated_kind())[1:].startswith("android")
 
-        return i.get_name().startswith("invoke-") and 
-                ((not is_android and not self.android_only) or
+        return i.get_name().startswith("invoke-") and \
+                ((not is_android and not self.android_only) or \
                 (is_android and self.android_only))
 
     def extract_calls_from_dex(self, dex):
