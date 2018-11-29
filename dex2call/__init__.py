@@ -65,7 +65,7 @@ class Extractor(object):
         return chain(*(self.extract_calls_from_dex(dex) for dex in APK(apkfile).get_all_dex()))
 
     def extract_calls_from_dexfile(self, dexfile):
-        with open(dexfile, 'rb') as dexfd
+        with open(dexfile, 'rb') as dexfd:
             return self.extract_calls_from_dex(dexfd.read())
 
     def is_interesting_instruction(self, i):
