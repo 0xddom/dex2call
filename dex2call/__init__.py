@@ -47,6 +47,8 @@ class ExtractedMethod(object):
             self.args = []
         self.args = [a for a in self.args if a]
         self.return_type = search_type(splited[1][:-1].replace('/', '.'))
+        if not self.return_type:
+            self.return_type = 'void'
 
     def __str__(self):
         return "(%s %s (%s) %s)" % (self.class_name, self.method_name, " ".join(self.args), self.return_type)
